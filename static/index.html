@@ -1,0 +1,34 @@
+<!doctype html>
+<html>
+	<head><script src='./htmc.min.js'></script></head>
+	<body>
+		<script type='text/htmc'>
+			let count = sig(0);
+			let arr = sig([1,2,3]);
+			console.log($arr);
+			window.onload=_=>{
+				get('/component.html', 'slot', {msg:'1st'});
+				get('/component.html', document.getElementById('slot2'));
+			}
+		</script>
+		<button
+			run="el.innerText=$count"
+			on-click="$count+=1"
+		></button>
+		<template for="let a of $arr">
+			<template for="let b of [1,2,3]">
+				<p
+					style="background:red"
+					run="el.innerText=`${a}${b}${$count}`"
+					on-click="$arr=[2,3]"
+				></p>
+			</template>
+			<div>b</div>
+		</template>
+		<div id='slot'></div>
+		<div run="get('/component.html',el,{
+			style:'background:green', msg:'hi'
+		})"></div>
+		<div id='slot2'></div>
+	</body>
+</html>

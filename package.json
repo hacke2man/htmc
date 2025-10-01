@@ -1,0 +1,19 @@
+{
+	"name": "htmc",
+	"version": "1.0.0",
+	"description": "",
+	"main": "index.js",
+	"scripts": {
+		"dev":"onchange -i -k '**/*.{js,html}' -- node main.js",
+		"minify":"terser --config-file terser.config.json static/htmc.js -o static/htmc.min.js"
+	},
+	"keywords": [],
+	"author": "",
+	"license": "ISC",
+	"packageManager": "pnpm@10.15.1",
+	"dependencies": {
+		"onchange": "^7.1.0",
+		"polka": "^0.5.2",
+		"terser": "^5.44.0"
+	}
+}
