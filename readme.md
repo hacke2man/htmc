@@ -3,7 +3,7 @@
 # Usage
 copy htmc.js/htmc.min.js into your project.
 ```html
-<script src='chosen path'></script>
+<script src='*your_path*/htmc.js'></script>
 <body>
 	<script type='text/htmc'>
 		//this is run within a function scope.
