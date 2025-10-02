@@ -1,7 +1,7 @@
-# CURRENTLY ALPHA - expect api changes
+**CURRENTLY ALPHA - expect api changes**
 
 # Usage
-copy htmc.js/htmc.min.js into repo.
+copy htmc.js/htmc.min.js into your project.
 ```html
 <script src='chosen path'></script>
 <body>
