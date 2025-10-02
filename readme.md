@@ -24,9 +24,17 @@ copy htmc.js/htmc.min.js into your project.
 	></button>
 	<!-- get replaces a id/html element with the html content at a given path -->
 	<!-- replaced element is in its own scope -->
-	<!-- the last obj is passed as props var -->
 	<slot run="get('/foo.html',el,{bar:'baz'})"></slot>
 </body>
+
+<!-- foo.html -->
+<div>
+	<script type='text/htmc'>
+		let {bar=''} = props;
+		console.log($count, count.v); //undefined undefined
+	</script>
+	<div run="el.innerText=bar"></div>
+</div>
 ```
 
 # Run Example
