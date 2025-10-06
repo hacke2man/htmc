@@ -4,7 +4,7 @@
 	"description": "",
 	"main": "index.js",
 	"scripts": {
-		"dev":"onchange -i -k '**/*.{js,html}' -- node main.js",
+		"dev":"onchange -i -k '**/*.{js,html}' -- sh -c 'clear; node main.js'",
 		"minify":"terser --config-file terser.config.json static/htmc.js -o static/htmc.min.js"
 	},
 	"keywords": [],

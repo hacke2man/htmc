@@ -3,8 +3,11 @@
 # Usage
 copy htmc.js/htmc.min.js into your project.
 ```html
-<script src='*your_path*/htmc.js'></script>
-<body>
+<head>
+	<script src='*your_path*/htmc.js'></script>
+	<script>htmc('app')</script>
+</head>
+<body id='app'>
 	<script type='text/htmc'>
 		//this is run within a function scope.
 		foo = 'bar'; //you can still set globals like this
@@ -19,6 +22,7 @@ copy htmc.js/htmc.min.js into your project.
 	<div run="el.innerText='foo'"></div>
 	<!-- the $ symbol turns the code into a cmp -->
 	<div run="el.innerText=$sum"></div>
+	<!-- use any event with on- -->
 	<button
 		run="el.innerText=$count"
 		on-click="$count+=1"
@@ -55,7 +59,6 @@ pnpm run dev
 
 # Ideas
 - parse template content once
-- recommended init sequence
 - modify template container tag/attrs
 
 # Credit

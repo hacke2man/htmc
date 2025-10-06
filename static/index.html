@@ -1,21 +1,26 @@
 <!doctype html>
 <html>
-	<head><script src='./htmc.min.js'></script></head>
-	<body>
+	<head>
+		<script src='./htmc.js'></script>
+		<script>addEventListener('DOMContentLoaded',_=>htmc('app'))</script>
+	</head>
+	<body id='app'>
 		<script type='text/htmc'>
 			let count = sig(0);
 			let arr = sig([1,2,3]);
 			console.log($arr);
-			window.onload=_=>{
-				get('/component.html', 'slot', {msg:'1st'});
-				get('/component.html', document.getElementById('slot2'));
-			}
+			get('/component.html', {msg:'1st'})
+				.then(ne=>document.getElementById('slot').replaceWith(ne));
+			get('/component.html')
+				.then(ne=>document.body.appendChild(ne));
 		</script>
 		<button
 			run="el.innerText=$count"
 			on-click="$count+=1"
 		></button>
-		<template for="let a of $arr">
+		<template for="let a of $arr"
+			style='border:solid green'
+		>
 			<template for="let b of [1,2,3]">
 				<p
 					style="background:red"
@@ -23,12 +28,12 @@
 					on-click="$arr=[2,3]"
 				></p>
 			</template>
-			<div>b</div>
+			<div run="console.log('b',a)">b</div>
 		</template>
 		<div id='slot'></div>
-		<div run="get('/component.html',el,{
+		<div run="get('/component.html',{
 			style:'background:green', msg:'hi'
-		})"></div>
+			}).then(n=>el.replaceWith(n))"></div>
 		<div id='slot2'></div>
 	</body>
 </html>
