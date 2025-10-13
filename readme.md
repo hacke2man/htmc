@@ -14,7 +14,9 @@
 
 # Setup
 - serve htmc.js/htmc.min.js
-- add <source src="*your_route*"></source>
+- add ```html
+<source src="*your_route*"></source>
+```
 - put id='app' on a element
 - call htmc('app')
 
