@@ -4,6 +4,9 @@
 - copy htmc.js/htmc.min.js into your project.
 - add it to your index
 
+# Usage
+see [example.html](static/example.html), and [foo.html](static/foo.html)
+
 # Run Example
 ```sh
 git clone https://github.com/hacke2man/htmc.git
@@ -11,10 +14,6 @@ cd htmc
 pnpm install
 pnpm run dev
 ```
-
-# Ideas
-- parse template content once
-- modify template container tag/attrs
 
 # Credit
 Signal Implementation
