@@ -23,8 +23,8 @@ see [example.html](static/example.html), and [foo.html](static/foo.html)
 ```sh
 git clone https://github.com/hacke2man/htmc.git
 cd htmc
-pnpm install
-pnpm run dev
+npm install
+npm run dev
 ```
 
 # Credit
