@@ -13,8 +13,8 @@
 ```
 
 # Setup
-- copy htmc.js/htmc.min.js into your project.
-- add it to your index
+- serve htmc.js/htmc.min.js
+- add <source src="*your_route*"></source>
 - put id='app' on a element
 - call htmc('app')
 
