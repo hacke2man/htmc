@@ -14,7 +14,7 @@ ${inner}
 		let m=[...c.matchAll(r)];
 		let is=m.length>0;
 		o+=s(`let ctr=document.createElement('${el.getAttribute('tag')||'div'}');ctr.loaded=1;el.after(ctr);
-for(let attr of el.attributes){console.log(attr);ctr.setAttribute(attr.name,attr.value);}
+for(let attr of el.attributes)ctr.setAttribute(attr.name,attr.value);
 ${is?`el.L=cmp(_=>{`:'{'}dispose(ctr);ctr.innerHTML='';
 for(${c.replace(r,"$1.v")}){
 	let cl=el.content.cloneNode(1);
