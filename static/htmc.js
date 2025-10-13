@@ -21,7 +21,7 @@ for(${c.replace(r,"$1.v")}){
 	let start = ctr.children.length;
 	ctr.appendChild(cl);
 	eval(elr(ctr,start))(ctr,start);
-}${is?`},[${m.map(m=>m[1]).join`,`}])`:'}'}`);
+}${is?`},[${m.map(m=>m[1]).join`,`}]);`:'}'}`);
 	}else{
 		let inner='';
 		for(let a of el.attributes)if(a.name.startsWith`run`){
@@ -29,7 +29,7 @@ for(${c.replace(r,"$1.v")}){
 			let s=m.length;
 			inner+=`${s?`el.L=cmp(_=>{`:'{'}
 ${a.value.replace(r,"$1.v")}
-${s?`},[${m.map(m=>m[1]).join`,`}])`:'}'}\n`;
+${s?`},[${m.map(m=>m[1]).join`,`}]);`:'}'}\n`;
 		}else if(a.name.startsWith('on-')){
 			inner+=`el.addEventListener('${a.name.slice(3)}',e=>{${a.value.replace(r,"$1.v")}});`
 		}
