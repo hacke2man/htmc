@@ -5,7 +5,9 @@ ${inner}
 })`
 )=>{elr=(el,i=0)=>{
 	let o = `/*${el.tagName}*/`;
-	if(el.tagName=="SCRIPT"&&el.getAttribute('type')&&el.getAttribute('type')=='text/htmc'){
+	if("svg"==el.tagName)
+		o='(_=>0)'
+	else if(el.tagName=="SCRIPT"&&el.getAttribute('type')&&el.getAttribute('type')=='text/htmc'){
 		o+=`${el.innerText.replace(r,"$1.v")};__i++`;
 	}else if(el.tagName=="TEMPLATE"&&el.getAttribute`for`){
 		let c=el.getAttribute`for`;
