@@ -1,5 +1,5 @@
 fs = require('node:fs');
-index = fs.readFileSync('./static/example.html').toString();
+index = fs.readFileSync('./static/usage.html').toString();
 htmc = fs.readFileSync('./static/htmc.js').toString();
 htmc_min = fs.readFileSync('./static/htmc.min.js').toString();
 component = fs.readFileSync('./static/foo.html').toString();

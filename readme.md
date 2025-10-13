@@ -19,7 +19,7 @@
 - call htmc('app')
 
 # Usage
-see [example.html](static/example.html), and [foo.html](static/foo.html)
+see [usage.html](static/usage.html), and [foo.html](static/foo.html)
 
 # Run Example
 ```sh
