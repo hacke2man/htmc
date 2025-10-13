@@ -14,12 +14,11 @@
 
 # Setup
 - serve htmc.js/htmc.min.js
-- add
 ```html
-<source src="*your_route*"></source>
+<script src="*your_route*"></script>
+<script>addEventListener('DOMContentLoaded', _=>htmc('app'))</script>
+<body id='app'></body>
 ```
-- put id='app' on a element
-- call htmc('app')
 
 # Usage
 see [usage.html](static/usage.html), and [foo.html](static/foo.html)
