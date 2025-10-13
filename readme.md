@@ -15,6 +15,8 @@
 # Setup
 - copy htmc.js/htmc.min.js into your project.
 - add it to your index
+- put id='app' on a element
+- call htmc('app')
 
 # Usage
 see [example.html](static/example.html), and [foo.html](static/foo.html)
