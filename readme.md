@@ -1,5 +1,17 @@
 **CURRENTLY ALPHA - expect api changes**
 
+```html
+<div>
+  <script type="text/htmc">
+    let counter = sig(0);
+  </script>
+  <button
+    run="el.innerHTML=$counter"
+    on-click="$counter++"
+  ></button>
+</div>
+```
+
 # Setup
 - copy htmc.js/htmc.min.js into your project.
 - add it to your index
