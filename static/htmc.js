@@ -86,7 +86,7 @@ let get=async(u,props={})=>{
 	eval(`{${elr(n)}}`)(n);
 	return n;
 }
-let htmc=el=>{
+let htmc=(el,props={})=>{
 	(typeof el=='string')&&(el=document.getElementById(el));
 	eval(elr(el))(el);
 }
