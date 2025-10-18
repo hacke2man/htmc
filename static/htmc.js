@@ -1,52 +1,55 @@
 ((
-	refregex = /\$([a-zA-Z][a-zA-Z0-9_]*)/g,
-	scope = inner => `((el,__i=0)=>{
-${inner}
+	sigregex = /\$([a-zA-Z][a-zA-Z0-9_]*)/g,
+	sigScope = (
+		code,
+		matches = [...code.matchAll(sigregex)],
+		isCmp = matches.length > 0,
+	) => `${isCmp? `el.L=cmp(_=>{`:''}
+${code}
+${isCmp? `},[${matches.map(match => match[1]).join`,`}]);` : ''}`,
+	scope = code => `((el,__i=0)=>{
+${cleanSigRefs(code)}
 })`,
-	cleanSigRefs = code => code.replace(refregex, "$1.v")
+	cleanSigRefs = code => code.replace(sigregex, "$1.v")
 )=>{ elr = (el, i = 0) => {
-	let o = `/*${el.tagName}*/`;
-	if ("svg" == el.tagName) {
+	let name = el.tagName;
+	let o = `/*${name}*/`;
+	if ("svg" == name) {
 		o = '(_=>0)'
 	} else if (
-		el.tagName == "SCRIPT" &&
-		el.getAttribute('type') &&
-		el.getAttribute('type') == 'text/htmc'
+		name == "SCRIPT" &&
+		el.getAttribute`type` &&
+		el.getAttribute`type` == 'text/htmc'
 	) {
 		o += `${cleanSigRefs(el.innerText)};__i++`;
-	} else if (el.tagName=="TEMPLATE" && el.getAttribute`for`){
+	} else if(name=="TEMPLATE" && el.getAttribute`for`) {
 		let header = el.getAttribute`for`;
-		let matches = [...header.matchAll(refregex)];
-		let isCmp = matches.length>0;
-		o += scope(`let ctr=document.createElement('${el.getAttribute('tag')||'div'}');ctr.loaded=1;el.after(ctr);
-for(let attr of el.attributes)ctr.setAttribute(attr.name,attr.value);
-${isCmp?`el.L=cmp(_=>{`:'{'}dispose(ctr);ctr.innerHTML='';
+		o += scope(`let ctr=document.createElement('${el.getAttribute`tag`||'div'}');ctr.loaded=1;el.after(ctr);
+for(let attr of el.attributes)ctr.setAttribute(attr.name,attr.value);`
+		+sigScope(`dispose(ctr);ctr.innerHTML='';
 for(${cleanSigRefs(header)}){
 	let cl=el.content.cloneNode(1);
 	let start = ctr.children.length;
 	ctr.appendChild(cl);
 	eval(elr(ctr,start))(ctr,start);
-}${ isCmp? `},[${matches.map(match => match[1]).join`,`}]);`:'}' }`);
+}`));
 	} else {
 		let inner = '';
 		for(let attr of el.attributes) {
 			if(attr.name.startsWith`run`) {
-				let matches = [...attr.value.matchAll(refregex)];
-				let isCmp = matches.length;
-				inner += `${isCmp?`el.L=cmp(_=>{`:'{'}
-${cleanSigRefs(attr.value)}
-${isCmp?`},[${matches.map(match => match[1]).join`,`}]);`:'}'}\n`;
-			} else if(attr.name.startsWith('on-')) {
+				inner += cleanSigRefs(sigScope(attr.value))+';'
+			} else if(attr.name.startsWith`on-`) {
 				inner += `el.addEventListener('${attr.name.slice(3)}',e=>{${cleanSigRefs(attr.value)}});`
 			}
 		}
 		for(; i < el.children.length; i++) {
 			let child = el.children[i];
 			let out = elr(child);
-			if(!child.loaded && child.tagName != 'SCRIPT') {
+			let childName = child.tagName;
+			if(!child.loaded && childName != 'SCRIPT') {
 				out = `\n${out}(el${i != null? `.children[__i++]`:''});`;
 			}
-			if(child.tagName == 'TEMPLATE') out += '__i++';
+			if(childName == 'TEMPLATE') out += '__i++';
 			inner += out
 		}
 		o += scope(inner);

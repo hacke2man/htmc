@@ -2,7 +2,7 @@
 	"module": true,
 	"compress": {"passes":3},
 	"mangle": {
-		"reserved": ["el", "e", "props", "htmc"],
+		"reserved": ["el", "props", "htmc"],
 		"eval": true
 	},
 	"output": {},
