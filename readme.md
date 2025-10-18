@@ -21,7 +21,7 @@
 ```
 
 # Usage
-see [usage.html](static/usage.html), and [foo.html](static/foo.html)
+see [usage.html](public/usage.html), and [foo.html](public/foo.html)
 
 # Run Example
 ```sh
