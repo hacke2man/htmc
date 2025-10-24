@@ -31,6 +31,10 @@ npm install
 npm run dev
 ```
 
+# Todo
+ - [ ] testing
+ - [ ] seperate debug features
+
 # Credit
 Signal Implementation
 https://github.com/jsebrech/tiny-signals/
