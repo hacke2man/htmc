@@ -1,0 +1,85 @@
+jse = (comp, parent) => {
+	if (Array.isArray(comp)) return comp.map(comp => htmc(comp, parent));
+	if (typeof comp == 'function') return comp(parent);
+	if ('stringnumber'.includes(typeof comp)) {
+		let textnode = document.createTextNode(comp);
+		parent.append(textnode);
+		return textnode;
+	}
+	let el = document.createElement(comp.tag || 'div');
+	for(let [k, v] of Object.entries(comp)) {
+		if (k.startsWith('on')) {
+			el.addEventListener(k.slice(2), e=>v(el,e));
+		} else if (v instanceof Sig) {
+			let compsig = cmp(_=> el[k] = v.v, [v])
+			el.D = pushitem(el.D, _=>compsig.ab.abort());
+		} else if (k=='style' && typeof v == 'object') {
+			Object.assign(el.style, v)
+		} else if ("inner"!=k) {
+			el.setAttribute(k,v);
+		}
+	}
+	parent.append(el);
+	if(comp.inner) htmc(comp.inner, el);
+	if(comp.run) comp.run(el);
+	return el;
+}
+
+let pushitem = (items, newitem) => items ? items.push(newitem) : [newitem];
+
+esub = (callback, deps) => {
+	return el => {
+		let computed = cmp(_=> {
+			for(let child of el.childNodes) dispose(child);
+			el.innerHTML = '';
+			htmc(callback(el), el);
+		}, deps);
+		el.D = pushitem(el.D, _=>computed.ab.abort());
+	}
+}
+
+class Sig extends EventTarget {
+	constructor(v) {
+		super();
+		this._v = v;
+	}
+	get v() {
+		return this._v
+	}
+	set v(v) {
+		if(this._v === v) return;
+		this._v = v;
+		this.up();
+	}
+	up(f) {
+		this.dispatchEvent(new CustomEvent('change'));
+	}
+	sub(callback) {
+		this.addEventListener('change', _=>callback(this._v));
+		return _ => this.removeEventListener('change', callback);
+	}
+}
+
+class Cmp extends Sig {
+	constructor(f, deps) {
+		super(f());
+		this.ab = new AbortController();
+		for(let dep of deps) {
+			if(dep instanceof Sig) {
+				dep.addEventListener(
+					'change',
+					_=>this.v = f(),
+					{signal: this.ab.signal}
+				);
+			}
+		}
+	}
+}
+
+dispose = el => {
+	if(el.D) el.D.forEach(defer=>defer());
+	if('childNodes' in el) for(let c of el.childNodes) dispose(c);
+}
+
+sig = _ => new Sig(_);
+cmp = (f,deps) => new Cmp(f,deps);
