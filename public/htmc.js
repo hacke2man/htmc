@@ -1,21 +1,22 @@
-jse = (comp, parent) => {
+htmc = (comp, parent) => {
 	if (Array.isArray(comp)) return comp.map(comp => htmc(comp, parent));
 	if (typeof comp == 'function') return comp(parent);
-	if ('stringnumber'.includes(typeof comp)) {
+	if (['string','number'].includes(typeof comp)) {
 		let textnode = document.createTextNode(comp);
 		parent.append(textnode);
 		return textnode;
 	}
 	let el = document.createElement(comp.tag || 'div');
 	for(let [k, v] of Object.entries(comp)) {
+		if (['inner','run'].includes(k)) continue;
 		if (k.startsWith('on')) {
 			el.addEventListener(k.slice(2), e=>v(el,e));
 		} else if (v instanceof Sig) {
-			let compsig = cmp(_=> el[k] = v.v, [v])
+			let compsig = cmp(_=> el[k] = v.v, [v]);
 			el.D = pushitem(el.D, _=>compsig.ab.abort());
-		} else if (k=='style' && typeof v == 'object') {
-			Object.assign(el.style, v)
-		} else if ("inner"!=k) {
+		} else if (typeof v == 'object') {
+			Object.assign(el[k], v);
+		} else {
 			el.setAttribute(k,v);
 		}
 	}
@@ -25,18 +26,7 @@ jse = (comp, parent) => {
 	return el;
 }
 
-let pushitem = (items, newitem) => items ? items.push(newitem) : [newitem];
-
-esub = (callback, deps) => {
-	return el => {
-		let computed = cmp(_=> {
-			for(let child of el.childNodes) dispose(child);
-			el.innerHTML = '';
-			htmc(callback(el), el);
-		}, deps);
-		el.D = pushitem(el.D, _=>computed.ab.abort());
-	}
-}
+let pushitem = (items, newitem) => items ? (items.push(newitem), items) : [newitem];
 
 class Sig extends EventTarget {
 	constructor(v) {
@@ -59,6 +49,7 @@ class Sig extends EventTarget {
 		return _ => this.removeEventListener('change', callback);
 	}
 }
+sig = _ => new Sig(_);
 
 class Cmp extends Sig {
 	constructor(f, deps) {
@@ -75,11 +66,20 @@ class Cmp extends Sig {
 		}
 	}
 }
+cmp = (f,deps) => new Cmp(f,deps);
 
 dispose = el => {
-	if(el.D) el.D.forEach(defer=>defer());
+	if(el.D) el.D.forEach(rm=>rm());
 	if('childNodes' in el) for(let c of el.childNodes) dispose(c);
 }
 
-sig = _ => new Sig(_);
-cmp = (f,deps) => new Cmp(f,deps);
+esub = (callback, deps) => {
+	return el => {
+		let computed = cmp(_=> {
+			for(let child of el.childNodes) dispose(child);
+			el.innerHTML = '';
+			htmc(callback(el), el);
+		}, deps);
+		el.D = pushitem(el.D, _=>computed.ab.abort());
+	}
+}

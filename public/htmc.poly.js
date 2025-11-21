@@ -9,7 +9,8 @@ function htmc(comp, parent) {
 	}
 	var el = document.createElement(comp.tag || 'div');
 	for(var k in comp) {
-		var v = comp[k]
+		var v = comp[k];
+		if (['inner','run'].indexOf(k) > -1) continue;
 		if (k.indexOf('on') === 0) {
 			el.addEventListener(k.slice(2), (function(v){
 				return function(e){v(el,e)}
@@ -17,10 +18,10 @@ function htmc(comp, parent) {
 		} else if (v instanceof Sig) {
 			var compsig = cmp(function(){el[k] = v.v, [v]})
 			el.D = pushitem(el.D, function(){compsig.abort()});
-		} else if (k=='style' && typeof v == 'object') {
-			for (var sk in v) el.style[sk] = v[sk];
-		} else if ("inner"!=k) {
-			el.setAttribute(k,v);
+		} else if (typeof v == 'object') {
+			for (var sk in v) el[k][sk] = v[sk];
+		} else {
+			el.setAttribute(k, v);
 		}
 	}
 	parent.appendChild(el);
