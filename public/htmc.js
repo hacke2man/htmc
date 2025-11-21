@@ -12,10 +12,15 @@ htmc = (comp, parent) => {
 		if (k.startsWith('on')) {
 			el.addEventListener(k.slice(2), e=>v(el,e));
 		} else if (v instanceof Sig) {
-			let compsig = cmp(_=> el[k] = v.v, [v]);
-			el.D = pushitem(el.D, _=>compsig.ab.abort());
+			let abort = v.sub(typeof v.v == 'string'?
+				_=> el.setAttribute(k, v.v):
+				_=> el[k] = v.v
+			);
+			el.D = pushitem(el.D, _=>abort());
 		} else if (typeof v == 'object') {
 			Object.assign(el[k], v);
+		} else if (typeof v != 'string') {
+			el[k] = v;
 		} else {
 			el.setAttribute(k,v);
 		}
