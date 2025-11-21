@@ -28,6 +28,17 @@ htmc = (comp, parent) => {
 
 let pushitem = (items, newitem) => items ? (items.push(newitem), items) : [newitem];
 
+esub = (callback, deps) => {
+	return el => {
+		let computed = cmp(_=> {
+			for(let child of el.childNodes) dispose(child);
+			el.innerHTML = '';
+			htmc(callback(el), el);
+		}, deps);
+		el.D = pushitem(el.D, _=>computed.ab.abort());
+	}
+}
+
 class Sig extends EventTarget {
 	constructor(v) {
 		super();
