@@ -9,20 +9,19 @@ function htmc(comp, parent) {
 	}
 	var el = document.createElement(comp.tag || 'div');
 	for(var k in comp) {
-		var v = comp[k];
 		if (['inner','run'].indexOf(k) > -1) continue;
-		if (k.indexOf('on') === 0) {
-			el.addEventListener(k.slice(2), (function(v){
-				return function(e){v(el,e)}
-			})(v));
-		} else if (v instanceof Sig) {
-			var compsig = cmp(function(){el[k] = v.v}, [v])
-			el.D = pushitem(el.D, function(){compsig.abort()});
-		} else if (typeof v == 'object') {
-			for (var sk in v) el[k][sk] = v[sk];
-		} else {
-			el.setAttribute(k, v);
-		}
+		(function(v,k) {
+			if (k.indexOf('on') === 0) {
+				el.addEventListener(k.slice(2), function(e){v(el,e)});
+			} else if (v instanceof Sig) {
+				var abort = v.sub(function(){el[k] = v.v});
+				el.D = pushitem(el.D, function(){abort()});
+			} else if (typeof v == 'object') {
+				for (var sk in v) el[k][sk] = v[sk];
+			} else {
+				el.setAttribute(k, v);
+			}
+		})(comp[k],k)
 	}
 	parent.appendChild(el);
 	if(comp.inner) htmc(comp.inner, el);
