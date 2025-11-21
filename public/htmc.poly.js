@@ -16,7 +16,7 @@ function htmc(comp, parent) {
 				return function(e){v(el,e)}
 			})(v));
 		} else if (v instanceof Sig) {
-			var compsig = cmp(function(){el[k] = v.v, [v]})
+			var compsig = cmp(function(){el[k] = v.v}, [v])
 			el.D = pushitem(el.D, function(){compsig.abort()});
 		} else if (typeof v == 'object') {
 			for (var sk in v) el[k][sk] = v[sk];
