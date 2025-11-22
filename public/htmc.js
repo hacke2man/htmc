@@ -12,10 +12,8 @@ htmc = (comp, parent) => {
 		if (k.startsWith('on')) {
 			el.addEventListener(k.slice(2), e=>v(el,e));
 		} else if (v instanceof Sig) {
-			let abort = v.sub(typeof v.v == 'string'?
-				_=> el.setAttribute(k, v.v):
-				_=> el[k] = v.v
-			);
+			let abort = v.sub(_=>typeof v.v == 'string'?
+				el.setAttribute(k, v.v) : el[k] = v.v);
 			el.D = pushitem(el.D, _=>abort());
 		} else if (typeof v == 'object') {
 			Object.assign(el[k], v);

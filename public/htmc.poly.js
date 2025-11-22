@@ -14,10 +14,9 @@ function htmc(comp, parent) {
 			if (k.indexOf('on') === 0) {
 				el.addEventListener(k.slice(2), function(e){v(el,e)});
 			} else if (v instanceof Sig) {
-				var abort = v.sub( typeof v.v == 'string'?
-					function(){el.setAttribute(k,v.v)}:
-					function(){el[k] = v.v}
-				);
+				var abort = v.sub(function(){
+					return typeof v.v == 'string'? el.setAttribute(k,v.v):el[k] = v.v
+				});
 				el.D = pushitem(el.D, function(){abort()});
 			} else if (typeof v == 'object') {
 				for (var sk in v) el[k][sk] = v[sk];
