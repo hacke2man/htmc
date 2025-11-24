@@ -10,12 +10,19 @@ let page _=> {
 };
 ```
 
-# Run Example
+# Setup
 ```sh
-git clone https://github.com/hacke2man/htmc.git
-cd htmc
-npm install
-npm run dev
+<head>
+	<script src=htmc.js></script>
+	<script src=page.js></script>
+	<script src='text/javascript'>
+		let app = document.getElementById('app');
+		htmc(page(), app);
+	</script>
+</head>
+<body>
+	<div id=app></div>
+</body>
 ```
 
 # Todo
