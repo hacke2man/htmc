@@ -12,9 +12,9 @@ htmc = (comp, parent) => {
 		if (k.startsWith('on')) {
 			el.addEventListener(k.slice(2), e=>v(el,e));
 		} else if (v instanceof Sig) {
-			let abort = v.sub(_=>typeof v.v == 'string'?
-				el.setAttribute(k, v.v) : el[k] = v.v);
-			el.D = pushitem(el.D, _=>abort());
+			el.D = pushitem(el.D,
+				v.sub(_=>typeof v.v == 'string'?
+					el.setAttribute(k, v.v) : el[k] = v.v));
 		} else if (typeof v == 'object') {
 			Object.assign(el[k], v);
 		} else if (typeof v != 'string') {
@@ -31,7 +31,7 @@ htmc = (comp, parent) => {
 
 let pushitem = (items, newitem) => items ? (items.push(newitem), items) : [newitem];
 
-esub = (callback, deps) => {
+sub = (callback, deps) => {
 	return el => {
 		let computed = cmp(_=> {
 			for(let child of el.childNodes) dispose(child);

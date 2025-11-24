@@ -37,7 +37,7 @@ function pushitem(items, newitem) {
 	return items ? items.push(newitem) : [newitem];
 }
 
-function esub (callback, deps) {
+function sub(callback, deps) {
 	return function(el) {
 		var computed = cmp(function() {
 			for (var i = 0; i < el.childNodes.length; i++) dispose(el.childNodes[i]);

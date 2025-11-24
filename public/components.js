@@ -12,7 +12,7 @@ home = _ => {
 				countersList.v = [...countersList.v].slice(0, countersList.v.length-1):[],
 			inner:'min',
 		},
-		{ tag:'div', inner:esub(_=>countersList.v, [countersList]) }
+		{ tag:'div', inner:sub(_=>countersList.v, [countersList]) }
 	]};
 }
 
@@ -28,9 +28,9 @@ counters = _ => {
 			onclick: _=> counters.v = [...counters.v].slice(0, counters.v.length-1),
 			inner:'min',
 		},
-		{ inner: esub(_=>counters.v.map(count=>(
+		{ inner: sub(_=>counters.v.map(count=>(
 			{tag:'button',
-				inner: esub(_=>count.v, [count]),
+				inner: sub(_=>count.v, [count]),
 				onclick: e=>count.v++,
 			}
 		)), [counters]) },
