@@ -11,7 +11,7 @@ let page _=> {
 ```
 
 # Setup
-```sh
+```html
 <head>
 	<script src=htmc.js></script>
 	<script src=page.js></script>
