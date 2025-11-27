@@ -14,8 +14,14 @@ function htmc(comp, parent) {
 			if (k.indexOf('on') === 0) {
 				el.addEventListener(k.slice(2), function(e){v(el,e)});
 			} else if (v instanceof Sig) {
-				var abort = v.sub(function(){
-					return typeof v.v == 'string'? el.setAttribute(k,v.v):el[k] = v.v
+				var abort = v.sub(_=>{
+					if (typeof v.v == 'string') {
+						el.setAttribute(k,v.v)
+					} else if (typeof v.v == 'object') {
+						for (var sk in v) el[k][sk] = v[sk];
+					} else {
+						el[k] = v.v
+					}
 				});
 				el.D = pushitem(el.D, function(){abort()});
 			} else if (typeof v == 'object') {
