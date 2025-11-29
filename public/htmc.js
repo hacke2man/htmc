@@ -2,17 +2,20 @@ htmc = (comp) => {
 	if (Array.isArray(comp)) return comp.map(comp => htmc(comp));
 	if (typeof comp == 'function') return htmc(comp());
 	if (comp instanceof Sig) {
-		let prev = htmc(comp.v);
-		let abort = comp.sub(_=>{
+		let abort, prev;
+		let create = _=>{
 			let el = htmc(comp.v);
-			if (prev.children)
-			for (let c of prev.children) dispose(c);
-			prev.D = pushitem(prev.D, abort);
-			prev.replaceWith(el);
-			prev = el
-		});
-		prev.D = pushitem(prev.D, abort);
-		return prev;
+			if(prev) {
+				if (prev.children)
+					for (let c of prev.children) dispose(c);
+				prev.D = pushitem(prev.D, abort);
+				prev.replaceWith(el);
+			}
+			prev = el;
+			return el;
+		}
+		abort = comp.sub(create);
+		return create();
 	}
 	if (typeof comp != 'object') {
 		let textnode = document.createTextNode(comp);
