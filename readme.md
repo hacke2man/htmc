@@ -15,7 +15,7 @@ let page _=> {
 <head>
 	<script src=htmc.js></script>
 	<script src=page.js></script>
-	<script src='text/javascript'>
+	<script type='text/javascript'>
 		let app = document.getElementById('app');
 		app.append(htmc(page()));
 	</script>
