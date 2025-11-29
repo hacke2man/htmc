@@ -28,10 +28,11 @@ counters = _ => {
 			onclick: _=> counters.v = [...counters.v].slice(0, counters.v.length-1),
 			inner:'min',
 		},
-		cmp(_=>({inner: counters.v.map(count=>({tag: 'button',
-			onclick: _=>count.v++,
-			inner: count,
-		}))
+		cmp(_=>({inner:
+			counters.v.map(count=>({tag: 'button',
+				onclick: _=>count.v++,
+				inner: count,
+			}))
 		}), [counters]),
 	]};
 }
