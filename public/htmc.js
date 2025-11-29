@@ -17,10 +17,7 @@ htmc = (comp) => {
 		abort = comp.sub(create);
 		return create();
 	}
-	if (typeof comp != 'object') {
-		let textnode = document.createTextNode(comp);
-		return textnode;
-	}
+	if (typeof comp != 'object') return document.createTextNode(comp);
 	let el = document.createElement(comp.tag || 'div');
 	for(let [k, v] of Object.entries(comp)) {
 		if (['inner','run'].includes(k)) continue;
