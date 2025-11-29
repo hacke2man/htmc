@@ -1,6 +1,7 @@
 home = _ => {
 	let num = sig(1);
 	let countersList = sig([counters()]);
+	countersList.sub(_=>console.log(countersList.v));
 	return { inner:[
 		{ tag:'button',
 			onclick: el =>
@@ -12,7 +13,7 @@ home = _ => {
 				countersList.v = [...countersList.v].slice(0, countersList.v.length-1):[],
 			inner:'min',
 		},
-		cmp(_=>({inner:countersList.v}), [countersList]),
+		sig(_=>({inner:countersList.v}), [countersList]),
 	]};
 }
 
@@ -28,7 +29,7 @@ counters = _ => {
 			onclick: _=> counters.v = [...counters.v].slice(0, counters.v.length-1),
 			inner:'min',
 		},
-		cmp(_=>({inner:
+		sig(_=>({inner:
 			counters.v.map(count=>({tag: 'button',
 				onclick: _=>count.v++,
 				inner: count,

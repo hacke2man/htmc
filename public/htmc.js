@@ -46,9 +46,19 @@ htmc = (comp) => {
 }
 
 class Sig extends EventTarget {
-	constructor(v) {
+	constructor(v, deps) {
 		super();
-		this._v = v;
+		if(deps) {
+			this._v = v();
+			this.ab = new AbortController();
+			for(let dep of deps)
+				dep.addEventListener(
+					'change', _=>this.v = v(),
+					{signal: this.ab.signal}
+				);
+		} else {
+			this._v = v;
+		}
 	}
 	get v() { return this._v }
 	set v(v) {
@@ -64,20 +74,7 @@ class Sig extends EventTarget {
 	toString() { return this._v.toString(); }
 	valueOf() { return this._v; }
 }
-sig = _ => new Sig(_);
-
-class Cmp extends Sig {
-	constructor(f, deps) {
-		super(f());
-		this.ab = new AbortController();
-		for(let dep of deps) if(dep instanceof Sig)
-			dep.addEventListener(
-				'change', _=>this.v = f(),
-				{signal: this.ab.signal}
-			);
-	}
-}
-cmp = (f,deps) => new Cmp(f,deps);
+sig = (v,deps) => new Sig(v,deps);
 
 dispose = el => {
 	if(el.D) el.D.forEach(rm=>rm());
