@@ -15,19 +15,21 @@ let page _=> {
 <head>
 	<script src=htmc.js></script>
 	<script src=page.js></script>
+</head>
+<body>
+	<div id=app></div>
 	<script type='text/javascript'>
 		let app = document.getElementById('app');
 		app.append(htmc(page()));
 	</script>
-</head>
-<body>
-	<div id=app></div>
 </body>
 ```
 
 # Todo
- - [ ] testing
+ - [ ] router extention
+ - [ ] lazy loader extention
  - [ ] debug features
+ - [ ] testing
 
 # Credit
 Signal Implementation
