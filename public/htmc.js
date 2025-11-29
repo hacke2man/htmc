@@ -12,10 +12,9 @@ htmc = (comp) => {
 				prev.replaceWith(el);
 			}
 			prev = el;
-			return el;
 		}
 		abort = comp.sub(create);
-		return create();
+		return create(), prev;
 	}
 	if (typeof comp != 'object') return document.createTextNode(comp);
 	let el = document.createElement(comp.tag || 'div');
