@@ -8,7 +8,7 @@ htmc = (comp) => {
 			if(prev) {
 				if (prev.children)
 					for (let c of prev.children) dispose(c);
-				prev.D = pushitem(prev.D, abort);
+				prev.D.push(abort);
 				prev.replaceWith(el);
 			}
 			prev = el;
@@ -16,8 +16,13 @@ htmc = (comp) => {
 		abort = comp.sub(create);
 		return create(), prev;
 	}
-	if (typeof comp != 'object') return document.createTextNode(comp);
+	if (typeof comp != 'object') {
+		let el = document.createTextNode(comp);
+		el.D = [];
+		return el;
+	}
 	let el = document.createElement(comp.tag || 'div');
+	el.D = [];
 	for(let [k, v] of Object.entries(comp)) {
 		if (['inner','run'].includes(k)) continue;
 		let assign = _=> {
@@ -29,7 +34,7 @@ htmc = (comp) => {
 				Object.assign(el[k], v.v) :
 				el[k] = v.v
 		}
-		if (v instanceof Sig) el.D = pushitem(el.D, v.sub(_=>assign()));
+		if (v instanceof Sig) el.D.push(v.sub(_=>assign()));
 		else assign();
 	}
 	if(comp.inner!=undefined) {
@@ -39,8 +44,6 @@ htmc = (comp) => {
 	if(comp.run) comp.run(el);
 	return el;
 }
-
-let pushitem = (items, newitem) => items ? (items.push(newitem), items) : [newitem];
 
 class Sig extends EventTarget {
 	constructor(v) {
