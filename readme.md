@@ -4,7 +4,7 @@
 let page _=> {
 	let counter = sig(0);
 	return { tag: 'button',
-		inner: sub(_=>counter.v, [counter]),
+		inner: counter,
 		oninput: _=>counter.v++
 	};
 };
@@ -17,7 +17,7 @@ let page _=> {
 	<script src=page.js></script>
 	<script src='text/javascript'>
 		let app = document.getElementById('app');
-		htmc(page(), app);
+		app.append(htmc(page()));
 	</script>
 </head>
 <body>

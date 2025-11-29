@@ -12,7 +12,7 @@ home = _ => {
 				countersList.v = [...countersList.v].slice(0, countersList.v.length-1):[],
 			inner:'min',
 		},
-		{ tag:'div', inner:sub(_=>countersList.v, [countersList]) }
+		cmp(_=>({inner:countersList.v}), [countersList]),
 	]};
 }
 
@@ -28,11 +28,10 @@ counters = _ => {
 			onclick: _=> counters.v = [...counters.v].slice(0, counters.v.length-1),
 			inner:'min',
 		},
-		{ inner: sub(_=>counters.v.map(count=>(
-			{tag:'button',
-				inner: sub(_=>count.v, [count]),
-				onclick: e=>count.v++,
-			}
-		)), [counters]) },
+		cmp(_=>({inner: counters.v.map(count=>({tag: 'button',
+			onclick: _=>count.v++,
+			inner: count,
+		}))
+		}), [counters]),
 	]};
 }

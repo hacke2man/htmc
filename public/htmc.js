@@ -1,76 +1,66 @@
-htmc = (comp, parent) => {
-	if (Array.isArray(comp)) return comp.map(comp => htmc(comp, parent));
-	if (typeof comp == 'function') return comp(parent);
-	if (['string','number'].includes(typeof comp)) {
+htmc = (comp) => {
+	if (Array.isArray(comp)) return comp.map(comp => htmc(comp));
+	if (typeof comp == 'function') return htmc(comp());
+	if (comp instanceof Sig) {
+		let prev = htmc(comp.v);
+		let abort = comp.sub(_=>{
+			let el = htmc(comp.v);
+			if (prev.children)
+			for (let c of prev.children) dispose(c);
+			prev.D = pushitem(prev.D, abort);
+			prev.replaceWith(el);
+			prev = el
+		});
+		prev.D = pushitem(prev.D, abort);
+		return prev;
+	}
+	if (typeof comp != 'object') {
 		let textnode = document.createTextNode(comp);
-		parent.append(textnode);
 		return textnode;
 	}
 	let el = document.createElement(comp.tag || 'div');
 	for(let [k, v] of Object.entries(comp)) {
 		if (['inner','run'].includes(k)) continue;
-		if (k.startsWith('on')) {
-			el.addEventListener(k.slice(2), e=>v(el,e));
-		} else if (v instanceof Sig) {
-			el.D = pushitem(el.D, v.sub(_=>
-				typeof v.v == 'string'?
-					el.setAttribute(k, v.v) :
-				typeof v.v == 'object'?
-					Object.assign(el[k], v.v) :
-					el[k] = v.v));
-		} else if (typeof v == 'object') {
-			Object.assign(el[k], v);
-		} else if (typeof v != 'string') {
-			el[k] = v;
-		} else {
-			el.setAttribute(k,v);
+		let assign = _=> {
+			k.startsWith('on')?
+				el.addEventListener(k.slice(2), e=>v(el,e)):
+			typeof v.v == 'string'?
+				el.setAttribute(k, v.v) :
+			typeof v.v == 'object'?
+				Object.assign(el[k], v.v) :
+				el[k] = v.v
 		}
+		if (v instanceof Sig) el.D = pushitem(el.D, v.sub(_=>assign()));
+		else assign();
 	}
-	parent.append(el);
-	if(comp.inner) htmc(comp.inner, el);
+	if(comp.inner!=undefined) {
+		let nel = htmc(comp.inner, el);
+		Array.isArray(nel)? el.append(...nel):el.append(nel);
+	}
 	if(comp.run) comp.run(el);
 	return el;
 }
 
 let pushitem = (items, newitem) => items ? (items.push(newitem), items) : [newitem];
 
-sub = (callback, deps) => {
-	return el => {
-		let computed = cmp(_=> {
-			for(let child of el.childNodes) dispose(child);
-			el.innerHTML = '';
-			htmc(callback(el), el);
-		}, deps);
-		el.D = pushitem(el.D, _=>computed.ab.abort());
-	}
-}
-
 class Sig extends EventTarget {
 	constructor(v) {
 		super();
 		this._v = v;
 	}
-	get v() {
-		return this._v
-	}
+	get v() { return this._v }
 	set v(v) {
 		if(this._v === v) return;
 		this._v = v;
 		this.up();
 	}
-	up(f) {
-		this.dispatchEvent(new CustomEvent('change'));
-	}
+	up() { this.dispatchEvent(new CustomEvent('change')); }
 	sub(callback) {
 		this.addEventListener('change', _=>callback(this._v));
 		return _ => this.removeEventListener('change', callback);
 	}
-	toString() {
-		return this._v.toString();
-	}
-	valueOf() {
-		return this._v;
-	}
+	toString() { return this._v.toString(); }
+	valueOf() { return this._v; }
 }
 sig = _ => new Sig(_);
 
@@ -78,15 +68,11 @@ class Cmp extends Sig {
 	constructor(f, deps) {
 		super(f());
 		this.ab = new AbortController();
-		for(let dep of deps) {
-			if(dep instanceof Sig) {
-				dep.addEventListener(
-					'change',
-					_=>this.v = f(),
-					{signal: this.ab.signal}
-				);
-			}
-		}
+		for(let dep of deps) if(dep instanceof Sig)
+			dep.addEventListener(
+				'change', _=>this.v = f(),
+				{signal: this.ab.signal}
+			);
 	}
 }
 cmp = (f,deps) => new Cmp(f,deps);
@@ -94,15 +80,4 @@ cmp = (f,deps) => new Cmp(f,deps);
 dispose = el => {
 	if(el.D) el.D.forEach(rm=>rm());
 	if('childNodes' in el) for(let c of el.childNodes) dispose(c);
-}
-
-esub = (callback, deps) => {
-	return el => {
-		let computed = cmp(_=> {
-			for(let child of el.childNodes) dispose(child);
-			el.innerHTML = '';
-			htmc(callback(el), el);
-		}, deps);
-		el.D = pushitem(el.D, _=>computed.ab.abort());
-	}
 }
