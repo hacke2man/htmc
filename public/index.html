@@ -3,14 +3,20 @@
 	<head>
 		<script src='/htmc.js'></script>
 		<script src='/components.js'></script>
-		<script>
-			addEventListener('DOMContentLoaded', _=>{
-				let app = document.getElementById('app');
-				app.append(htmc(home()));
-			});
-		</script>
+		<script src='/router.js'></script>
 	</head>
 	<body>
 		<div id='app'></div>
+		<script>
+			routes = {
+				'/404': _=>'404',
+				'/hi': _=>'hi',
+			};
+			content = document.createElement('div');
+			app = document.getElementById('app');
+			app.append(content);
+			page(location.pathname);
+			app.append(htmc(home()));
+		</script>
 	</body>
 </html>

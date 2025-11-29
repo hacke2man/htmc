@@ -26,7 +26,7 @@ let page _=> {
 ```
 
 # Todo
- - [ ] router extention
+ - [x] router extention
  - [ ] lazy loader extention
  - [ ] debug features
  - [ ] testing
