@@ -65,6 +65,12 @@ class Sig extends EventTarget {
 		this.addEventListener('change', _=>callback(this._v));
 		return _ => this.removeEventListener('change', callback);
 	}
+	toString() {
+		return this._v.toString();
+	}
+	valueOf() {
+		return this._v;
+	}
 }
 sig = _ => new Sig(_);
 

@@ -86,6 +86,12 @@ Sig.prototype = {
 			var index = self._listeners.indexOf(callback);
 			if (index > -1) self._listeners.splice(index, 1);
 		};
+	},
+	toString: function() {
+		return this._v.toString();
+	},
+	valueOf: function() {
+		return this._v;
 	}
 };
 
