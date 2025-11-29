@@ -1,4 +1,4 @@
-htmc = (comp) => {
+htmc = comp => {
 	if (Array.isArray(comp)) return comp.map(comp => htmc(comp));
 	if (typeof comp == 'function') return htmc(comp());
 	if (comp instanceof Sig) {
@@ -6,8 +6,8 @@ htmc = (comp) => {
 		let create = _=>{
 			let el = htmc(comp.v);
 			if(prev) {
-				if (prev.children)
-					for (let c of prev.children) dispose(c);
+				if (prev.childNodes)
+					for (let c of prev.childNodes) dispose(c);
 				prev.D.push(abort);
 				prev.replaceWith(el);
 			}
@@ -52,13 +52,8 @@ class Sig extends EventTarget {
 			this._v = v();
 			this.ab = new AbortController();
 			for(let dep of deps)
-				dep.addEventListener(
-					'change', _=>this.v = v(),
-					{signal: this.ab.signal}
-				);
-		} else {
-			this._v = v;
-		}
+				dep.sub(_=>this.v = v(), {signal: this.ab.signal});
+		} else this._v = v;
 	}
 	get v() { return this._v }
 	set v(v) {
@@ -67,8 +62,8 @@ class Sig extends EventTarget {
 		this.up();
 	}
 	up() { this.dispatchEvent(new CustomEvent('change')); }
-	sub(callback) {
-		this.addEventListener('change', _=>callback(this._v));
+	sub(callback, op = {}) {
+		this.addEventListener('change', _=>callback(this._v), op);
 		return _ => this.removeEventListener('change', callback);
 	}
 	toString() { return this._v.toString(); }
