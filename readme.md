@@ -25,7 +25,7 @@ let page _=> {
 </body>
 ```
 
-# Useage
+# Usage
 ```js
 htmc("hi"); // text node: hi
 
