@@ -7,9 +7,9 @@ function htmc(comp) {
 			create = function() {
 				var el = htmc(comp.v);
 				if(prev) {
-					if (prev.childNodes)
-						for (var c in prev.childNodes)
-							dispose(prev.childNodes[c]);
+					if ('childNodes' in prev)
+						for (var i = 0; i < prev.childNodes.length; i++)
+							dispose(prev.childNodes[i]);
 					prev.D.push(abort);
 					prev.parentNode.replaceChild(el, prev);
 				}
@@ -27,30 +27,36 @@ function htmc(comp) {
 	var el = document.createElement(comp.tag || 'div');
 	el.D = [];
 	for(var k in comp) {
-		if (['inner','run'].indexOf(k) > -1) continue;
+		if (['inner','run','tag'].indexOf(k) > -1) continue;
 		(function(v,k) {
-			var assign = function() {
+			var assign = function(v, k) {
 				if (k.indexOf('on') === 0)
 					el.addEventListener(k.slice(2), function(e){v(el,e)});
 				else if (typeof v == 'object')
 					for (var sk in v) el[k][sk] = v[sk];
-				else if (typeof v != 'string') el[k] = v;
+				else if (typeof v != 'string' || k in el)
+					el[k] = v;
 				else el.setAttribute(k, v);
 			}
 			if (v instanceof Sig) {
-				var abort = v.sub(function() {assign()});
-				el.D.up(function(){abort()});
-			} else assign()
+				assign(v.v, k);
+				let abort = v.sub(function() {assign(v.v, k)});
+				el.D.push(function(){abort()});
+			} else assign(v, k)
 		})(comp[k],k)
 	}
 	if(comp.inner !== undefined) {
 		var nel = htmc(comp.inner, el);
-		if (Object.prototype.toString.call(nel) === "[object Array]") {
-			for (var child of nel) el.appendChild(child);
-		} else el.appendChild(nel);
+		append(el, nel);
 	}
 	if(comp.run) comp.run(el);
 	return el;
+}
+
+function append(el, nel) {
+	if (Object.prototype.toString.call(nel) === "[object Array]") {
+		for (var child in nel) append(el, nel[child]);
+	} else el.appendChild(nel);
 }
 
 function dispose(el) {
@@ -107,3 +113,4 @@ Sig.prototype = {
 };
 
 function sig(v, deps){return new Sig(v, deps)}
+

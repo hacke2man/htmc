@@ -1,22 +1,24 @@
 <!doctype html>
 <html>
 	<head>
-		<script src='/htmc.js'></script>
-		<script src='/components.js'></script>
-		<script src='/router.js'></script>
+		<script src=/htmc.poly.js></script>
+		<script src=/router.js></script>
+		<script src=/home.js></script>
+		<script src=/layout.js></script>
+		<script src=/testpage.js></script>
 	</head>
 	<body>
-		<div id='app'></div>
+		<div id=app></div>
 		<script>
 			routes = {
 				'/404': _=>'404',
-				'/hi': _=>'hi',
+				'/testspage': tests,
+				'/': home,
 			};
-			content = document.createElement('div');
+
 			app = document.getElementById('app');
-			app.append(content);
+			app.append(htmc(layout()));
 			page(location.pathname);
-			app.append(htmc(home()));
 		</script>
 	</body>
 </html>

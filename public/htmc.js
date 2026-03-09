@@ -25,23 +25,25 @@ htmc = comp => {
 	el.D = [];
 	for(let [k, v] of Object.entries(comp)) {
 		if (['inner','run'].includes(k)) continue;
-		let assign = _=> {
+		let assign = v => {
 			k.startsWith('on')?
 				el.addEventListener(k.slice(2), e=>v(el,e)):
-			typeof v.v == 'string'?
-				el.setAttribute(k, v.v) :
-			typeof v.v == 'object'?
-				Object.assign(el[k], v.v) :
-				el[k] = v.v
+			typeof v == 'string'?
+				el.setAttribute(k, v) :
+			typeof v == 'object'?
+				Object.assign(el[k], v) :
+				el[k] = v
 		}
-		if (v instanceof Sig) el.D.push(v.sub(_=>assign()));
-		else assign();
+		if (v instanceof Sig) {
+			el.D.push(v.sub(_=>assign(v.v)));
+			assign(v.v);
+		} else assign(v);
 	}
 	if(comp.inner!=undefined) {
 		let nel = htmc(comp.inner, el);
 		Array.isArray(nel)? el.append(...nel):el.append(nel);
 	}
-	if(comp.run) comp.run(el);
+	comp.run&&comp.run(el);
 	return el;
 }
 
