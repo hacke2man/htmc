@@ -2,6 +2,7 @@
 pkgs.mkShell {
 	buildInputs = with pkgs; [
 		nodejs
+		pnpm
 		typescript-language-server
 		vscode-langservers-extracted
 	];
