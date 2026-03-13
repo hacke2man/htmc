@@ -3,20 +3,25 @@ function htmc(comp) {
 		return comp.map(function(comp) {return htmc(comp)});
 	if (typeof comp == 'function') return htmc(comp());
 	if (comp instanceof Sig) {
-		return (function(abort, prev, create) {
-			create = function() {
+		return (function(abort, prev) {
+			var update = function() {
+				var index = prev.D.indexOf(abort);
+				prev.D.splice(index, 1);
+				dispose(prev);
+
 				var el = htmc(comp.v);
-				if(prev) {
-					if ('childNodes' in prev)
-						for (var i = 0; i < prev.childNodes.length; i++)
-							dispose(prev.childNodes[i]);
-					prev.D.push(abort);
-					prev.parentNode.replaceChild(el, prev);
-				}
+				el.D.push(abort)
+				prev.parentNode.replaceChild(el, prev);
 				prev = el;
 			}
-			abort = comp.sub(create);
-			return create(), prev;
+			sub_abort = comp.sub(update);
+			abort = function() {
+				sub_abort();
+				comp.abort();
+			}
+			prev = htmc(comp.v);
+			prev.D.push(abort);
+			return prev;
 		})()
 	}
 	if (typeof comp !== 'object') {
@@ -46,7 +51,7 @@ function htmc(comp) {
 		})(comp[k],k)
 	}
 	if(comp.inner !== undefined) {
-		var nel = htmc(comp.inner, el);
+		var nel = htmc(comp.inner);
 		append(el, nel);
 	}
 	if(comp.run) comp.run(el);
@@ -67,9 +72,12 @@ function dispose(el) {
 }
 
 function Sig(v, deps){
+	this.ab = [];
+	this.abort = function() {
+		for (i in this.ab) this.ab[i]()
+	}
 	if (deps) {
 		this._v = v();
-		this.ab = [];
 		for (var i = 0; i < deps.length; i++) {
 			var dep = deps[i];
 			if (dep instanceof Sig) {
@@ -96,7 +104,8 @@ Sig.prototype = {
 			this._listeners[i](this._v);
 		}
 	},
-	sub: function(cb) {
+	sub: function(callback) {
+		var cb = function() { callback(this._v) };
 		this._listeners.push(cb);
 		var self = this;
 		return function() {
@@ -113,4 +122,3 @@ Sig.prototype = {
 };
 
 function sig(v, deps){return new Sig(v, deps)}
-

@@ -3,18 +3,24 @@ htmc = comp => {
 	if (typeof comp == 'function') return htmc(comp());
 	if (comp instanceof Sig) {
 		let abort, prev;
-		let create = _=>{
+		let update = _=> {
+			prev.D.splice(prev.D.indexOf(abort), 1);
+			dispose(prev);
+
 			let el = htmc(comp.v);
-			if(prev) {
-				if (prev.childNodes)
-					for (let c of prev.childNodes) dispose(c);
-				prev.D.push(abort);
-				prev.replaceWith(el);
-			}
+			el.D.push(abort);
+			prev.replaceWith(el);
 			prev = el;
+			return prev;
 		}
-		abort = comp.sub(create);
-		return create(), prev;
+		sub_abort = comp.sub(update);
+		abort = _=> {
+			sub_abort();
+			if (comp.ab) comp.ab.abort();
+		}
+		prev = htmc(comp.v);
+		prev.D.push(abort);
+		return prev;
 	}
 	if (typeof comp != 'object') {
 		let el = document.createTextNode(comp);
@@ -27,21 +33,26 @@ htmc = comp => {
 		if (['inner','run'].includes(k)) continue;
 		let assign = v => {
 			k.startsWith('on')?
-				el.addEventListener(k.slice(2), e=>v(el,e)):
+				el.addEventListener(k.slice(2), e=>v(el,e)) :
 			typeof v == 'string'?
 				el.setAttribute(k, v) :
 			typeof v == 'object'?
 				Object.assign(el[k], v) :
-				el[k] = v
+				el[k] = v;
 		}
 		if (v instanceof Sig) {
 			el.D.push(v.sub(_=>assign(v.v)));
 			assign(v.v);
 		} else assign(v);
 	}
-	if(comp.inner!=undefined) {
-		let nel = htmc(comp.inner, el);
-		Array.isArray(nel)? el.append(...nel):el.append(nel);
+	if('inner' in comp) {
+		let nel = htmc(comp.inner);
+		let htmc_append = (el, nel) => {
+			if (Array.isArray(nel)) {
+				for (let child of nel) htmc_append(el, child);
+			} else el.append(nel);
+		}
+		htmc_append(el, nel);
 	}
 	comp.run&&comp.run(el);
 	return el;
@@ -65,8 +76,9 @@ class Sig extends EventTarget {
 	}
 	up() { this.dispatchEvent(new CustomEvent('change')); }
 	sub(callback, op = {}) {
-		this.addEventListener('change', _=>callback(this._v), op);
-		return _ => this.removeEventListener('change', callback);
+		let cb = _=>callback(this._v);
+		this.addEventListener('change', cb, op);
+		return _=> this.removeEventListener('change', cb);
 	}
 	toString() { return this._v.toString(); }
 	valueOf() { return this._v; }
