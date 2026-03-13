@@ -14,6 +14,9 @@ function page(url, state = {}, nopush) {
 	for (let child of content.childNodes)
 		dispose(child);
 
+	if (Array.isArray(routes[path])) {
+		throw new Error("Page content cannot be a unwraped array");
+	}
 	content.innerHTML = '';
 	content.appendChild(htmc(routes[path](state)));
 
