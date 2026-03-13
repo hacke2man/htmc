@@ -5,6 +5,7 @@ pkgs.mkShell {
 		pnpm
 		typescript-language-server
 		vscode-langservers-extracted
+		watchexec
 	];
 	shellHook = ''
 		export LSPSERVERS="$LSPSERVERS,html,ts_ls"
