@@ -1,32 +1,25 @@
-function page(url, state, nopush) {
-	state===undefined&&(state={});
-	if (url.indexOf('https') == 0) {
-		location = url
-		return;
-	};
-	if (!nopush) history.pushState(state, null, url);
-	var path;
-	var urlp = url.split(/\?(.*)/)[0];
-	for (var route in routes) {
-		if (route[route.length-1] === "*") {
-			var trimroute = route.slice(0, route.length-2);
-			if (urlp.indexOf(trimroute) === 0) path = route;
-		} else if(route === urlp) path = route;
-		if(path != undefined) break;
+function page(url, state = {}, nopush) {
+	url.indexOf('http') == 0 && (location = url);
+	nopush || history.pushState(state, null, url);
+
+	var path = url == '/'? '/':'/404';
+	url = url.split(/\/?(\?.*)?$/)[0];
+
+	routes[url] && (path = url);
+	while (path == '/404' && url != '') {
+		routes[url + '/*'] && (path = url + '/*');
+		url = url.split(/\/[^\/]*$/)[0];
 	}
-	path = routes[path]? path:'/404';
-	for (var i = 0; i < content.childNodes.length; i++)
-		dispose(content.childNodes[i]);
+
+	for (let child of content.childNodes)
+		dispose(child)
+
 	content.innerHTML = '';
-	var elements = htmc(routes[path](state));
-	if (Object.prototype.toString.call(elements) === "[object Array]")
-		for (var i = 0; i < elements.length; i++)
-			content.appendChild(elements[i]);
-	else
-		content.appendChild(elements);
+	content.appendChild(htmc(routes[path](state)));
+
 	window.scrollTo(0,0);
 }
 
 addEventListener('popstate', function(e) {
-	page(location.pathname, e.state, true);
+	page(location.pathname, e.state, true)
 })
