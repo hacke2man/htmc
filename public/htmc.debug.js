@@ -2,28 +2,28 @@ htmc = comp => {
 	if (Array.isArray(comp)) return comp.map(comp => htmc(comp));
 	if (typeof comp == 'function') return htmc(comp());
 	if (comp instanceof Sig) {
+		if (Array.isArray(comp.v)) {
+			throw new Error(
+				"Signals used as htmc component cannot be an array. wrap with div"
+			);
+		}
+
 		let abort, prev;
-		let update = _=> {
+		let make = el => (el = htmc(comp.v), el.D.push(abort), el);
+		let sub_abort = comp.sub(_=> {
 			prev.D.splice(prev.D.indexOf(abort), 1);
 			dispose(prev);
 
-			if (Array.isArray(comp.v)) {
-				throw new Error(
-					"Signals used as htmc component cannot be an array. wrap with div"
-				);
-			}
-			let el = htmc(comp.v);
-			el.D.push(abort);
+			let el = make();
 			prev.replaceWith(el);
 			prev = el;
-		}
-		sub_abort = comp.sub(update);
+			return prev;
+		});
 		abort = _=> {
 			sub_abort();
 			if (comp.ab) comp.ab.abort();
 		}
-		prev = htmc(comp.v);
-		prev.D.push(abort);
+		prev = make();
 		return prev;
 	}
 	if (typeof comp != 'object') {
@@ -96,3 +96,4 @@ dispose = el => {
 	if(el.D) el.D.forEach(rm=>rm());
 	if('childNodes' in el) for(let c of el.childNodes) dispose(c);
 }
+

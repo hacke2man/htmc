@@ -4,7 +4,7 @@ function htmc(comp) {
 	if (typeof comp == 'function') return htmc(comp());
 	if (comp instanceof Sig) {
 		return (function(abort, prev) {
-			var update = function() {
+			var sub_abort = comp.sub(function() {
 				var index = prev.D.indexOf(abort);
 				prev.D.splice(index, 1);
 				dispose(prev);
@@ -13,8 +13,7 @@ function htmc(comp) {
 				el.D.push(abort)
 				prev.parentNode.replaceChild(el, prev);
 				prev = el;
-			}
-			var sub_abort = comp.sub(update);
+			});
 			abort = function() {
 				sub_abort();
 				comp.abort();
