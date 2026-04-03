@@ -1,3 +1,0 @@
-#!/bin/sh
-
-watchexec -r -e js,css,html "clear;date;node main.js"

@@ -1,4 +1,8 @@
 {
+	"name": "htmc",
+	"scripts": {
+		"dev": "watchexec -r -e js,html 'clear; date; node main.js'"
+	},
 	"dependencies": {
 		"polka": "^0.5.2",
 		"serve-static": "^2.2.0"
