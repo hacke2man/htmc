@@ -68,7 +68,7 @@ class Sig extends EventTarget {
 		super();
 		if(deps) {
 			if (typeof v != 'function') {
-				throw new Error("Creating dependent signal with non function first arg");
+				throw new Error("Creating dependent signal without a function");
 			}
 			this._v = v();
 			this.ab = new AbortController();
@@ -78,7 +78,6 @@ class Sig extends EventTarget {
 	}
 	get v() { return this._v }
 	set v(v) {
-		if(this._v === v) return;
 		this._v = v;
 		this.up();
 	}

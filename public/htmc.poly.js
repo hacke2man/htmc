@@ -95,7 +95,6 @@ function Sig(v, deps){
 Sig.prototype = {
 	get v() { return this._v; },
 	set v(v) {
-		if (this._v === v) return;
 		this._v = v;
 		this.up();
 	},

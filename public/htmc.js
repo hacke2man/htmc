@@ -70,7 +70,6 @@ class Sig extends EventTarget {
 	}
 	get v() { return this._v }
 	set v(v) {
-		if(this._v === v) return;
 		this._v = v;
 		this.up();
 	}
