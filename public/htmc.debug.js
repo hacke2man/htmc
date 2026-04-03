@@ -16,7 +16,6 @@ htmc = comp => {
 			el.D.push(abort);
 			prev.replaceWith(el);
 			prev = el;
-			return prev;
 		}
 		sub_abort = comp.sub(update);
 		abort = _=> {
