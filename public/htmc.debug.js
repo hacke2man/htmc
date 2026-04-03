@@ -50,16 +50,17 @@ htmc = comp => {
 		} else assign(v);
 	}
 	if('inner' in comp) {
-		let nel = htmc(comp.inner);
-		let htmc_append = (el, nel) => {
-			if (Array.isArray(nel)) {
-				for (let child of nel) htmc_append(el, child);
-			} else el.append(nel);
-		}
+		let nel = htmc(comp.in);
 		htmc_append(el, nel);
 	}
 	comp.run&&comp.run(el);
 	return el;
+}
+
+let htmc_append = (el, nel) => {
+	if (Array.isArray(nel)) {
+		for (let child of nel) htmc_append(el, child);
+	} else el.append(nel);
 }
 
 class Sig extends EventTarget {

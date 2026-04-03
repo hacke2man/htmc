@@ -52,13 +52,13 @@ function htmc(comp) {
 	}
 	if(comp.inner !== undefined) {
 		var nel = htmc(comp.inner);
-		append(el, nel);
+		htmc_append(el, nel);
 	}
 	if(comp.run) comp.run(el);
 	return el;
 }
 
-function append(el, nel) {
+function htmc_append(el, nel) {
 	if (Object.prototype.toString.call(nel) === "[object Array]") {
 		for (var child in nel) append(el, nel[child]);
 	} else el.appendChild(nel);
