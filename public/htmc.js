@@ -13,7 +13,7 @@ htmc = comp => {
 			prev = el;
 			return prev;
 		}
-		sub_abort = comp.sub(update);
+		let sub_abort = comp.sub(update);
 		abort = _=> {
 			sub_abort();
 			if (comp.ab) comp.ab.abort();

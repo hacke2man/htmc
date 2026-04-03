@@ -14,7 +14,7 @@ function htmc(comp) {
 				prev.parentNode.replaceChild(el, prev);
 				prev = el;
 			}
-			sub_abort = comp.sub(update);
+			var sub_abort = comp.sub(update);
 			abort = function() {
 				sub_abort();
 				comp.abort();
