@@ -26,16 +26,16 @@ htmc = comp => {
 		el.D = [];
 		return el;
 	}
-	let el = document.createElement(comp.tag || 'div');
+	let el = document.createElement(comp.$ || 'div');
 	el.D = [];
 	for(let [k, v] of Object.entries(comp)) {
-		if (['inner','run'].includes(k)) continue;
+		if (['in','run','$'].includes(k)) continue;
 		let assign = v => {
 			k.startsWith('on')?
 				el.addEventListener(k.slice(2), e=>v(el,e)) :
-			typeof v == 'string'?
+				typeof v == 'string'?
 				el.setAttribute(k, v) :
-			typeof v == 'object'?
+				typeof v == 'object'?
 				Object.assign(el[k], v) :
 				el[k] = v;
 		}
@@ -44,7 +44,7 @@ htmc = comp => {
 			assign(v.v);
 		} else assign(v);
 	}
-	if('inner' in comp) {
+	if('in' in comp) {
 		let nel = htmc(comp.in);
 		htmc_append(el, nel);
 	}

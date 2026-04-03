@@ -29,10 +29,10 @@ function htmc(comp) {
 		textnode.D = [];
 		return textnode;
 	}
-	var el = document.createElement(comp.tag || 'div');
+	var el = document.createElement(comp.$ || 'div');
 	el.D = [];
 	for(var k in comp) {
-		if (['inner','run','tag'].indexOf(k) > -1) continue;
+		if (['in','run','$'].indexOf(k) > -1) continue;
 		(function(v,k) {
 			var assign = function(v, k) {
 				if (k.indexOf('on') === 0)
@@ -50,8 +50,8 @@ function htmc(comp) {
 			} else assign(v, k)
 		})(comp[k],k)
 	}
-	if(comp.inner !== undefined) {
-		var nel = htmc(comp.inner);
+	if(comp.in !== undefined) {
+		var nel = htmc(comp.in);
 		htmc_append(el, nel);
 	}
 	if(comp.run) comp.run(el);
