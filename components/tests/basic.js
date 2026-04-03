@@ -1,9 +1,9 @@
 let test = _=> {
-	return { inner: [
-		{inner: 'plain div'},
+	return { in: [
+		{in: 'plain div'},
 		{style: {
 			background: 'red',
 			border: 'solid .2rem blue',
-		}, inner: 'styled'},
+		}, in: 'styled'},
 	]}
 }

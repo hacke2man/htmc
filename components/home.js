@@ -1,5 +1,5 @@
 home = _=> {
 	return {
-		inner: 'home',
+		in: 'home',
 	}
 }

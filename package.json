@@ -1,9 +1,5 @@
 {
-	"scripts": {
-		"dev": "onchange -i -k '**/*.js' -- node main.js"
-	},
 	"dependencies": {
-		"onchange": "^7.1.0",
 		"polka": "^0.5.2",
 		"serve-static": "^2.2.0"
 	}

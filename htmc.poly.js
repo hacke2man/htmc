@@ -59,7 +59,7 @@ function htmc(comp) {
 
 function htmc_append(el, nel) {
 	if (Object.prototype.toString.call(nel) === "[object Array]") {
-		for (var child in nel) append(el, nel[child]);
+		for (var child in nel) htmc_append(el, nel[child]);
 	} else el.appendChild(nel);
 }
 
