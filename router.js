@@ -1,5 +1,5 @@
 function page(url, state = {}, nopush) {
-	url.indexOf('http') == 0 && (location = url);
+	/^http/.test(url) && (location = url);
 	nopush || history.pushState(state, null, url);
 
 	var path = url == '/'? '/':'/404';
