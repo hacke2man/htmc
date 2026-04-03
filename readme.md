@@ -5,7 +5,7 @@ let page _=> {
 	let counter = sig(0);
 	return { $: 'button',
 		in: counter,
-		oninput: _=>counter.v++
+		onclick: _=>counter.v++
 	};
 };
 ```
