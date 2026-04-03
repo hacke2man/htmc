@@ -72,7 +72,6 @@ let computed = sig(() => count.v*2, [count]); //signals can be computed from oth
 ```
 
 # Todo
- - [x] router extention
  - [ ] lazy loader extention
  - [ ] debug features
  - [ ] testing
